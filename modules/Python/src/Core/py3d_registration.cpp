@@ -88,7 +88,7 @@ void pybind_registration(py::module &m)
             convergence_criteria);
     convergence_criteria
         .def(py::init([](double fitness, double rmse, int32_t itr) {
-            return new ICPConvergenceCriteria(fitness, rmse, itr);
+            return std::unique_ptr<ICPConvergenceCriteria>(new ICPConvergenceCriteria(fitness, rmse, itr));
         }), "relative_fitness"_a = 1e-6, "relative_rmse"_a = 1e-6,
                 "max_iteration"_a = 30)
         .def_readwrite("relative_fitness",
@@ -111,7 +111,7 @@ void pybind_registration(py::module &m)
             ransac_criteria);
     ransac_criteria
         .def(py::init([](int32_t max_iteration, int32_t max_validation) {
-            return new RANSACConvergenceCriteria(max_iteration, max_validation);
+            return std::unique_ptr<RANSACConvergenceCriteria>(new RANSACConvergenceCriteria(max_iteration, max_validation));
         }), "max_iteration"_a = 1000, "max_validation"_a = 1000)
         .def_readwrite("max_iteration",
                 &RANSACConvergenceCriteria::max_iteration_)
@@ -141,7 +141,7 @@ void pybind_registration(py::module &m)
             te_p2p);
     te_p2p
         .def(py::init([](bool with_scaling) {
-            return new TransformationEstimationPointToPoint(with_scaling);
+            return std::unique_ptr<TransformationEstimationPointToPoint>(new TransformationEstimationPointToPoint(with_scaling));
         }), "with_scaling"_a = false)
         .def("__repr__", [](const TransformationEstimationPointToPoint &te) {
             return std::string("TransformationEstimationPointToPoint ") +
@@ -178,8 +178,8 @@ void pybind_registration(py::module &m)
             cc_el);
     cc_el
         .def(py::init([](double similarity_threshold) {
-            return new CorrespondenceCheckerBasedOnEdgeLength(
-                similarity_threshold);
+            return std::unique_ptr<CorrespondenceCheckerBasedOnEdgeLength>(new CorrespondenceCheckerBasedOnEdgeLength(
+                similarity_threshold));
         }), "similarity_threshold"_a = 0.9)
         .def("__repr__", [](const CorrespondenceCheckerBasedOnEdgeLength &c) {
             return std::string("CorrespondenceCheckerBasedOnEdgeLength with similarity threshold ") +
@@ -196,8 +196,8 @@ void pybind_registration(py::module &m)
             cc_d);
     cc_d
         .def(py::init([](double distance_threshold) {
-            return new CorrespondenceCheckerBasedOnDistance(
-                distance_threshold);
+            return std::unique_ptr<CorrespondenceCheckerBasedOnDistance>(new CorrespondenceCheckerBasedOnDistance(
+                distance_threshold));
         }), "distance_threshold"_a)
         .def("__repr__", [](const CorrespondenceCheckerBasedOnDistance &c) {
             return std::string("CorrespondenceCheckerBasedOnDistance with distance threshold ") +
@@ -214,8 +214,8 @@ void pybind_registration(py::module &m)
             cc_n);
     cc_n
         .def(py::init([](double normal_angle_threshold) {
-            return new CorrespondenceCheckerBasedOnNormal(
-                    normal_angle_threshold);
+            return std::unique_ptr<CorrespondenceCheckerBasedOnNormal>(new CorrespondenceCheckerBasedOnNormal(
+                    normal_angle_threshold));
         }), "normal_angle_threshold"_a)
         .def("__repr__", [](const CorrespondenceCheckerBasedOnNormal &c) {
             return std::string("CorrespondenceCheckerBasedOnNormal with normal threshold ") +
@@ -233,10 +233,10 @@ void pybind_registration(py::module &m)
                 bool decrease_mu, double maximum_correspondence_distance,
                 int32_t iteration_number, double tuple_scale,
                 int32_t maximum_tuple_count) {
-            return new FastGlobalRegistrationOption(division_factor,
+            return std::unique_ptr<FastGlobalRegistrationOption>(new FastGlobalRegistrationOption(division_factor,
                     use_absolute_scale, decrease_mu,
                     maximum_correspondence_distance, iteration_number,
-                    tuple_scale, maximum_tuple_count);
+                    tuple_scale, maximum_tuple_count));
         }), "division_factor"_a = 1.4, "use_absolute_scale"_a = false,
                 "decrease_mu"_a = false,
                 "maximum_correspondence_distance"_a = 0.025,

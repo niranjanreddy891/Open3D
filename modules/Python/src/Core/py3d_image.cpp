@@ -75,7 +75,7 @@ void pybind_image(py::module &m)
                 num_of_channels = static_cast<int32_t>(info.shape[2]);
             }
             height = static_cast<int32_t>(info.shape[0]); width = static_cast<int32_t>(info.shape[1]);
-            auto img = new Image();
+            auto img = std::unique_ptr<Image>(new Image());
             img->PrepareImage(width, height,
                     num_of_channels, bytes_per_channel);
             memcpy(img->data_.data(), info.ptr, img->data_.size());

@@ -72,7 +72,7 @@ void pybind_globaloptimization(py::module &m)
     pose_graph_node
         .def_readwrite("pose", &PoseGraphNode::pose_)
         .def(py::init([](const Eigen::Matrix4d &pose = Eigen::Matrix4d::Identity()) {
-            return new PoseGraphNode(pose); }), "pose"_a)
+            return std::unique_ptr<PoseGraphNode>(new PoseGraphNode(pose)); }), "pose"_a)
         .def("__repr__", [](const PoseGraphNode &rr) {
             return std::string("PoseGraphNode, access pose to get its current pose.");
     });
@@ -92,8 +92,8 @@ void pybind_globaloptimization(py::module &m)
         .def(py::init([](int32_t source_node_id, int32_t target_node_id,
                 Eigen::Matrix4d &transformation, Eigen::Matrix6d &information,
                 bool uncertain, double confidence) {
-            return new PoseGraphEdge(source_node_id, target_node_id,
-                    transformation, information, uncertain, confidence);
+            return std::unique_ptr<PoseGraphEdge>(new PoseGraphEdge(source_node_id, target_node_id,
+                    transformation, information, uncertain, confidence));
         }), "source_node_id"_a = -1, "target_node_id"_a = -1,
                 "transformation"_a = Eigen::Matrix4d::Identity(),
                 "information"_a = Eigen::Matrix6d::Identity(),
@@ -214,8 +214,8 @@ void pybind_globaloptimization(py::module &m)
                 &GlobalOptimizationOption::reference_node_)
         .def(py::init([](double max_correspondence_distance,
                 double edge_prune_threshold, int32_t reference_node) {
-            return new GlobalOptimizationOption(max_correspondence_distance,
-                edge_prune_threshold, reference_node);
+            return std::unique_ptr<GlobalOptimizationOption>(new GlobalOptimizationOption(max_correspondence_distance,
+                edge_prune_threshold, reference_node));
         }), "max_correspondence_distance"_a = 0.03,
                 "edge_prune_threshold"_a = 0.25, "reference_node"_a = -1)
         .def("__repr__", [](const GlobalOptimizationOption &goo) {

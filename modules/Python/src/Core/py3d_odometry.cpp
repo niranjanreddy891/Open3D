@@ -75,9 +75,9 @@ void pybind_odometry(py::module &m)
         .def(py::init([](double minimum_correspondence_ratio,
                 std::vector<int32_t> iteration_number_per_pyramid_level,
                 double max_depth_diff, double min_depth, double max_depth) {
-            return new OdometryOption(minimum_correspondence_ratio,
+            return std::unique_ptr<OdometryOption>(new OdometryOption(minimum_correspondence_ratio,
                 iteration_number_per_pyramid_level,
-                max_depth_diff, min_depth, max_depth);
+                max_depth_diff, min_depth, max_depth));
         }), "minimum_correspondence_ratio"_a = 0.1,
                 "iteration_number_per_pyramid_level"_a =
                 std::vector<int32_t>{ 20,10,5 }, "max_depth_diff"_a = 0.03,
